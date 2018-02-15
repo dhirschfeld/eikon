@@ -1,6 +1,6 @@
-import pip
 from setuptools import setup, find_packages
 from setuptools.command.test import test as TestCommand
+import re
 
 # NoseTestCommand allow to launch nosetest with the command 'python setup.py test'
 class NoseTestCommand(TestCommand):
@@ -14,8 +14,11 @@ class NoseTestCommand(TestCommand):
         import nose
         nose.run_exit(argv=['nosetests'])
 
+module_file = open("eikon/__init__.py").read()
+metadata = dict(re.findall("__([a-z]+)__\s*=\s*'([^']+)'", module_file))
+
 setup(name='eikon',
-      version='0.1.11',
+      version= metadata['version'],
       description='Python package for retrieving Eikon data.',
       long_description='Python package for retrieving Eikon data.',
       url='https://developers.thomsonreuters.com/tr-eikon-scripting-apis/python-thin-library-pyeikon/',

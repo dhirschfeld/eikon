@@ -5,7 +5,7 @@ import json
 from .tools import is_string_type
 from .eikonError import *
 import eikon.Profile
-
+import logging
 
 def send_json_request(entity, payload, ID='123', debug=False):
     """
@@ -43,9 +43,11 @@ def send_json_request(entity, payload, ID='123', debug=False):
     EikonError
         If daemon is disconnected
     """
+    logger = eikon.Profile.get_profile().logger
+
     if debug:
-        print("entity: ", entity)
-        print("payload: ", payload)
+        logger.debug("entity: ", entity)
+        logger.debug("payload: ", payload)
 
     profile = eikon.Profile.get_profile()
     if profile:
@@ -66,7 +68,7 @@ def send_json_request(entity, payload, ID='123', debug=False):
             udf_request = {'Entity': {'E': entity, 'W': data}, 'ID':ID}
 
             if debug:
-                print('Request: {}'.format(json.dumps(udf_request)))
+                logger.debug('Request: {}'.format(json.dumps(udf_request)))
 
             response = profile.get_session().post(profile.get_url(),
                                      data=json.dumps(udf_request),
@@ -76,9 +78,9 @@ def send_json_request(entity, payload, ID='123', debug=False):
 
             if debug:
                 try:
-                    print('HTTP Response: {} - {}'.format(response.status_code, response.text))
+                    logger.info('HTTP Response: {} - {}'.format(response.status_code, response.text))
                 except UnicodeEncodeError:
-                    print('HTTP Response: cannot decode error message')
+                    logger.error('HTTP Response: cannot decode error message')
 
             if response.status_code == 200:
                 result = response.json()

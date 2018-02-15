@@ -1,13 +1,11 @@
 # coding: utf-8
 
-from datetime import datetime, timedelta
-from dateutil.tz import tzlocal
+import logging
 import eikon.json_requests
 from .tools import is_string_type, check_for_string_or_list_of_strings, check_for_string, check_for_int, get_json_value, \
     to_datetime, get_date_from_today
 import pandas as pd
 from eikon.eikonError import *
-import warnings
 
 
 TimeSeries_UDF_endpoint = 'TimeSeries'
@@ -100,6 +98,8 @@ def get_timeseries(rics, fields='*', start_date=get_date_from_today(100), end_da
     >>>                          end_date = get_date_from_today(100), interval="daily")
     """
 
+    logger = eikon.Profile.get_profile().logger
+
     # set the ric(s) in the payload
     check_for_string_or_list_of_strings(rics, 'rics')
     if is_string_type(rics):
@@ -129,7 +129,9 @@ def get_timeseries(rics, fields='*', start_date=get_date_from_today(100), end_da
     start_date = to_datetime(start_date).isoformat()
     end_date = to_datetime(end_date).isoformat()
 
-    if start_date > end_date: raise ValueError('end date should be after than start date ')
+    if start_date > end_date:
+        logger.error('end date ({0})should be after than start date ({1})'.format(end_date, start_date))
+        raise ValueError('end date ({0})should be after than start date ({1})'.format(end_date, start_date))
 
     payload = {'rics': rics, 'fields': fields, 'interval': interval, 'startdate': start_date, 'enddate': end_date}
 
@@ -145,7 +147,8 @@ def get_timeseries(rics, fields='*', start_date=get_date_from_today(100), end_da
         if is_string_type(calendar):
             payload.update({'calendar': calendar})
         else:
-            raise ValueError('calendar must be a string')
+            logger.error('calendar must has string type')
+            raise ValueError('calendar must has string type')
 
     # set the corax in the payload
     if corax is not None:
@@ -169,7 +172,7 @@ def get_timeseries(rics, fields='*', start_date=get_date_from_today(100), end_da
         ts_error_messages += ts_error_message
         ts_error_messages += ' | '
         warning_message = 'Error with {0}'.format(ts_error_message)
-        warnings.warn(warning_message)
+        logger.warning(warning_message)
 
     #  if all timeseries are in error, then raise EikonError with all error messages
     if len(ts_status_errors)==len(ts_timeserie_data):

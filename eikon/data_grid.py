@@ -120,7 +120,8 @@ def get_data(instruments, fields, parameters=None, field_name=False, raw_output=
     >>> fields = [ek.TR_Field('tr.revenue'),ek.TR_Field('tr.open',None,'asc',1),ek.TR_Field('TR.GrossProfit',{'Scale': 6, 'Curn': 'EUR'},'asc',0)]
     >>> data_grid, err = ek.get_data(["IBM","MSFT.O"],fields)
     """
-  
+    logger = eikon.Profile.get_profile().logger
+
     check_for_string_or_list_of_strings(instruments, 'instruments')
     instruments = build_list(instruments, 'instruments')
     instruments = [value.upper() if value.islower() else value for value in instruments]
@@ -136,7 +137,7 @@ def get_data(instruments, fields, parameters=None, field_name=False, raw_output=
         name = list(f.keys())[0]
         field_info = f[name]
         if type(field_info) != dict:
-            print(("get_data error :The parameters for the file {0} should be passed in a dict".format(name)))
+            logger.error("get_data error :The parameters for the file {0} should be passed in a dict".format(name))
             return None,"The parameters for field {0} are invalid".format(name)
 
         field = {'name':name}

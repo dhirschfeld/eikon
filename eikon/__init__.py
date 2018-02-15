@@ -1,5 +1,5 @@
 # coding: utf-8
-__version__ = "0.1.10"
+__version__ = '0.1.12'
 
 """
     eikon is a Python library to access Thomson Reuters Data with Python.
@@ -9,7 +9,7 @@ __version__ = "0.1.10"
 
 """
 
-from .Profile import set_app_id, get_app_id, set_timeout, get_timeout
+from .Profile import set_app_id, get_app_id, set_timeout, get_timeout, set_port_number, get_port_number
 from .symbology import get_symbology
 from .json_requests import send_json_request
 from .news_request import get_news_headlines, get_news_story
