@@ -16,6 +16,7 @@ class NoseTestCommand(TestCommand):
 
 module_file = open("eikon/__init__.py").read()
 metadata = dict(re.findall("__([a-z]+)__\s*=\s*'([^']+)'", module_file))
+version = metadata['version']
 
 setup(name='eikon',
       version= metadata['version'],

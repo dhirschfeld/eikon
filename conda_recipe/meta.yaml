@@ -1,0 +1,40 @@
+{% set data = load_setup_py_data() %}
+
+package:
+  name: eikon
+  version: {{ data.version }}
+
+source:
+  git_url: https://github.com/dhirschfeld/eikon.git
+
+build:
+  noarch: python
+  number: 0
+
+requirements:
+  build:
+    - python
+    - setuptools
+    - requests
+    - pandas >=0.17.0
+    - appdirs
+    - python-dateutil
+    - websocket-client
+
+  run:
+    - python
+    - requests
+    - pandas >=0.17.0
+    - appdirs
+    - python-dateutil
+    - websocket-client
+
+test:
+  imports:
+    - eikon
+
+about:
+  home: https://developers.thomsonreuters.com/tr-eikon-scripting-apis/python-thin-library-pyeikon/
+  license: LICENSE
+  summary: 'Python package for retrieving Eikon data.'
+  license_family: OTHER
